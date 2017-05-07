@@ -2,13 +2,86 @@
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" rel="stylesheet" \>
 
 
-
-  <p>Sort by:</p>
-  <div class="btn-group btn-group-sm" role="group" aria-label="Basic example">
-    <button type="button" class="btn btn-secondary">Title</button>
-    <button type="button" class="btn btn-secondary">Release Date</button>
-    <button type="button" class="btn btn-secondary">Genre</button>
+<div class="container-fliud">
+  <div class="row">
+    <div class="col col-md-auto">
+      Sort by:
+    </div>
+    <div class="btn-group btn-group-sm col-md-4" role="group" aria-label="Basic example">
+      <button type="button" class="btn btn-secondary">Title</button>
+      <button type="button" class="btn btn-secondary">Release Date</button>
+      <button type="button" class="btn btn-secondary">Genre</button>
+    </div>
   </div>
+</div>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-8">
+      <% @movies = Movie.all %>
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Release date</th>
+            <th>Genre</th>
+            <th>Rating</th>
+            <th colspan="3"></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% @movies.each do |movie| %>
+            <tr>
+              <td><%= movie.title %></td>
+              <td><%= movie.release_date %></td>
+              <td><%= movie.genre %></td>
+              <td><%= movie.rating %></td>
+              <td><%= link_to 'Show', movie %></td>
+              <td><%= link_to 'Edit', edit_movie_path(movie) %></td>
+              <td><%= link_to 'Destroy', movie, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    <div class="col">
+        <h3>Recent Reviews</h3>
+        <br>
+        <% @reviews = Review.all %>
+        <table>
+          <body>
+            <% @reviews.each do |review| %>
+              <tr>
+                <td><%= review.comment %></td>
+                <td><%= review.rating %></td>
+              </tr>
+            <% end %>
+          </body>
+        </table>
+        <br>
+        <a href="/reviews">View All Reviews</a>
+        <br>
+        <h3>Recent Movies</h3>
+        <br>
+        <% @movies = Movie.all %>
+        <table>
+          <body>
+            <% @movies.each do |movie| %>
+              <tr>
+                <td><%= movie.title %></td>
+                <td><%= movie.rating %></td>
+              </tr>
+            <% end %>
+          </body>
+        </table>
+        <br>
+        <a href="/reviews">View All Moview</a>
+    </div>
+  </div>
+</div>
+
+
 
 
 
