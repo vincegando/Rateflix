@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
 
   if @m.nil?
     response = HTTParty.get('https://api.themoviedb.org/3/discover/movie?primary_release_date.gte=2017-04-21&primary_release_date.lte=2017-05-04&api_key=9102d7681e0cf5372e737751c7b9c3b9&region=US&language=en')
-    puts response
+    
 
     data = response.parsed_response["results"]
     data.each do |object|
