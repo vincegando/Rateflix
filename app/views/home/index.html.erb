@@ -8,18 +8,21 @@
       Sort by:
     </div>
     <div class="btn-group btn-group-sm col-md-4" role="group" aria-label="Basic example">
-      <button type="button" class="btn btn-secondary">Title</button>
-      <button type="button" class="btn btn-secondary">Release Date</button>
-      <button type="button" class="btn btn-secondary">Genre</button>
+      <!-- <button type="button" class="btn btn-secondary">Title</button> -->
+      <%= link_to "Title", {:sort => "title"}, type: "button", class: "btn btn-secondary" %>
+      <%= link_to "Release Date", {:sort => "release_date"}, type: "button", class: "btn btn-secondary" %>
+      <%= link_to "Genre", {:sort => "genre"}, type: "button", class: "btn btn-secondary" %>
+      <!-- <button type="button" class="btn btn-secondary">Release Date</button> -->
+      <!-- <button type="button" class="btn btn-secondary">Genre</button> -->
     </div>
   </div>
 </div>
-
+<br>
 <div class="container-fluid">
   <div class="row">
     <div class="col-8">
-      <% @movies = Movie.all %>
-      <table>
+
+      <!-- <table>
         <thead>
           <tr>
             <th>Title</th>
@@ -30,59 +33,172 @@
           </tr>
         </thead>
 
-        <tbody>
+        <tbody> -->
           <% @movies.each do |movie| %>
-            <tr>
-              <td><%= movie.title %></td>
+            <!-- <tr>
+              <td><%= link_to movie.title, movie %></td>
               <td><%= movie.release_date %></td>
               <td><%= movie.genre %></td>
               <td><%= movie.rating %></td>
-              <td><%= link_to 'Show', movie %></td>
-              <td><%= link_to 'Edit', edit_movie_path(movie) %></td>
-              <td><%= link_to 'Destroy', movie, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-            </tr>
+            </tr> -->
+            <div class="thumbnail">
+              <h3><%= link_to movie.title, movie %></h3>
+              <%= image_tag(movie.img) %>
+              <br>
+              <div class="caption">
+                <p><strong>Release Date: </strong><%= movie.release_date.to_datetime.strftime("%b %e, %Y") %></p>
+                <p><strong>Genre: </strong><%= movie.genre %></p>
+                <% @n = 0 %>
+                <% @reviews = Review.where(movie_id: movie.id).order("created_at DESC") %>
+                <% if @reviews.count > 0 then %>
+
+
+                  <% @sum = 0 %>
+                  <% @reviews.each do |review| %>
+                    <% @sum += review.rating %>
+
+                  <% end %>
+
+
+                  <% @sum = @sum / @reviews.count %>
+
+                  <% movie.rating = @sum %>
+                <% end %>
+                <strong>Rating: </strong>
+                <% while @n < movie.rating do %>
+                  <%= image_tag("star-on.png") %>
+
+                  <% @n += 1 %>
+                <% end %>
+
+                <p><br><strong>Comments: </strong></p>
+                <% i = 0; %>
+
+                <table class="table table-striped">
+                  <tbody>
+                    <% @reviews.each do |review| %>
+                      <% if i >= 2 then %>
+                        <% break %>
+                      <% end %>
+                      <% if review.movie_id == movie.id then %>
+                        <tr>
+                          <td>
+                            <p><strong>Name: </strong><%= review.username %></p>
+                            <p><strong>Date: </strong><%= review.date %></p>
+                            <p><strong>Comment: </strong><%= review.comment %></p>
+                            <% n = 0 %>
+                            <strong>Rating: </strong>
+                            <% while n < review.rating do %>
+                              <%= image_tag("star-on.png") %>
+
+                              <% n += 1 %>
+                            <% end %>
+                          </td>
+                        </tr>
+                      <% end %>
+                      <% i += 1 %>
+                    <% end %>
+                  </tbody>
+                </table>
+                <br>
+                <p><%= link_to "Write a Review", new_movie_review_path(movie), class: "btn btn-primary" %> <%= link_to "View Movie", movie, class: "btn btn-primary" %></p>
+              </div>
+            </div>
           <% end %>
-        </tbody>
-      </table>
+        <!-- </tbody>
+      </table> -->
     </div>
     <div class="col">
         <h3>Recent Reviews</h3>
         <br>
-        <% @reviews = Review.all %>
-        <table>
-          <body>
+        <% i = 0; %>
+        <% @reviews = Review.order("created_at DESC") %>
+        <table class="table table-striped">
+          <tbody>
             <% @reviews.each do |review| %>
+              <% if i >= 3 then %>
+                <% break %>
+              <% end %>
               <tr>
-                <td><%= review.comment %></td>
-                <td><%= review.rating %></td>
+                <td>
+                  <p><strong>Name: </strong><%= review.username %></p>
+                  <p><strong>Date: </strong><%= review.date %></p>
+                  <p><strong>Comment: </strong><%= review.comment %></p>
+                  <% n = 0 %>
+                  <strong>Rating: </strong>
+                  <% while n < review.rating do %>
+                    <%= image_tag("star-on.png") %>
+                    <% n += 1 %>
+                  <% end %>
+                  <% @m = Movie.find(review.movie_id) %>
+                  <p><br><strong>Movie: </strong><%= @m.title %></p>
+                </td>
               </tr>
+              <% i += 1 %>
             <% end %>
-          </body>
+          </tbody>
         </table>
         <br>
         <a href="/reviews">View All Reviews</a>
-        <br>
+        <br><br>
         <h3>Recent Movies</h3>
         <br>
+        <% i = 0; %>
         <% @movies = Movie.all %>
         <table>
           <body>
             <% @movies.each do |movie| %>
+            <% if i >= 4 then %>
+              <% break %>
+            <% end %>
               <tr>
                 <td><%= movie.title %></td>
-                <td><%= movie.rating %></td>
+                <% n = 0 %>
+                <td>
+                  <% @n = 0 %>
+                  <% @reviews = Review.where(movie_id: movie.id).order("created_at DESC") %>
+                  <% if @reviews.count > 0 then %>
+
+
+                    <% @sum = 0 %>
+                    <% @reviews.each do |review| %>
+                      <% @sum += review.rating %>
+
+                    <% end %>
+
+
+                    <% @sum = @sum / @reviews.count %>
+
+                    <% movie.rating = @sum %>
+                  <% end %>
+
+                  <% while @n < movie.rating do %>
+                    <%= image_tag("star-on.png") %>
+
+                    <% @n += 1 %>
+                  <% end %>
+                </td>
               </tr>
+              <% i += 1 %>
             <% end %>
           </body>
         </table>
         <br>
-        <a href="/reviews">View All Moview</a>
+        <a href="/movies">View All Movies</a>
     </div>
   </div>
 </div>
 
 
 
-
+<!-- <script>
+  $('star-rating').raty({
+    path: '/assets'
+    readOnly: true,
+    score: function() {
+      return $(this).attr('data-score');
+    }
+  });
+</script> -->
 
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" ></script>

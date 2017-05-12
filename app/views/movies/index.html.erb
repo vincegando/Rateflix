@@ -1,9 +1,49 @@
 <p id="notice"><%= notice %></p>
 
 <h1>Movies</h1>
+<br>
+
+<% @movies.each do |movie| %>
+  <!-- <tr>
+    <td><%= link_to movie.title, movie %></td>
+    <td><%= movie.release_date %></td>
+    <td><%= movie.genre %></td>
+    <td><%= movie.rating %></td>
+  </tr> -->
+  <div class="thumbnail">
+    <h3><%= link_to movie.title, movie %></h3>
+    <%= image_tag(movie.img) %>
+    <br>
+    <div class="caption">
+      <p><strong>Release Date: </strong><%= movie.release_date.to_datetime.strftime("%b %e, %Y") %></p>
+      <p><strong>Genre: </strong><%= movie.genre %></p>
+      <% @n = 0 %>
+      <% @reviews = Review.where(movie_id: movie.id).order("created_at DESC") %>
+      <% if @reviews.count > 0 then %>
 
 
-<table>
+        <% @sum = 0 %>
+        <% @reviews.each do |review| %>
+          <% @sum += review.rating %>
+
+        <% end %>
+
+
+        <% @sum = @sum / @reviews.count %>
+
+        <% movie.rating = @sum %>
+      <% end %>
+      <strong>Rating: </strong>
+      <% while @n < movie.rating do %>
+        <%= image_tag("star-on.png") %>
+
+        <% @n += 1 %>
+      <% end %>
+      <p><br><%= link_to "Write a Review", new_movie_review_path(movie), class: "btn btn-primary" %> <%= link_to "View Movie", movie, class: "btn btn-primary" %></p>
+    </div>
+  </div>
+<% end %>
+<!-- <table>
   <thead>
     <tr>
       <th>Title</th>
@@ -17,18 +57,11 @@
   <tbody>
     <% @movies.each do |movie| %>
       <tr>
-        <td><%= movie.title %></td>
+        <td><%= link_to movie.title, movie %></td>
         <td><%= movie.release_date %></td>
         <td><%= movie.genre %></td>
         <td><%= movie.rating %></td>
-        <td><%= link_to 'Show', movie %></td>
-        <td><%= link_to 'Edit', edit_movie_path(movie) %></td>
-        <td><%= link_to 'Destroy', movie, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
-</table>
-
-<br>
-
-<%= link_to 'New Movie', new_movie_path %>
+</table> -->

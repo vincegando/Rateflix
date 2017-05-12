@@ -1,15 +1,19 @@
 class ReviewsController < ApplicationController
   before_action :set_review, only: [:show, :edit, :update, :destroy]
 
+  before_action :set_movie, :except => [:index]
+
+  # skip_before_action :set_movie, only: [:show]
   # GET /reviews
   # GET /reviews.json
   def index
-    @reviews = Review.all
+    @reviews = Review.order("created_at DESC")
   end
 
   # GET /reviews/1
   # GET /reviews/1.json
   def show
+
   end
 
   # GET /reviews/new
@@ -25,14 +29,15 @@ class ReviewsController < ApplicationController
   # POST /reviews.json
   def create
     @review = Review.new(review_params)
+    @review.movie_id = @movie.id
 
     respond_to do |format|
       if @review.save
-        format.html { redirect_to @review, notice: 'Review was successfully created.' }
-        format.json { render :show, status: :created, location: @review }
+        format.html { redirect_to @movie, notice: 'Your Review was successfully posted!' }
+        format.json { render :show, status: :created, location: @movie }
       else
         format.html { render :new }
-        format.json { render json: @review.errors, status: :unprocessable_entity }
+        format.json { render json: @movie.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -65,6 +70,11 @@ class ReviewsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_review
       @review = Review.find(params[:id])
+    end
+
+    def set_movie
+      @movie = Movie.find(params[:movie_id])
+
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

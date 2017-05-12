@@ -1,6 +1,24 @@
 <!DOCTYPE html>
 <html>
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" rel="stylesheet" \>
+
+  <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+  <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+  <script>
+    var settings = {
+      "async": true,
+      "crossDomain": true,
+      "url": "https://api.themoviedb.org/3/discover/movie?primary_release_date.gte=2017-04-21&primary_release_date.lte=2017-05-04&api_key=9102d7681e0cf5372e737751c7b9c3b9&region=US&language=en",
+      "method": "GET"
+    }
+
+    $.ajax(settings).done(function (response) {
+      console.log(response);
+      
+    });
+  </script
+
   <head>
     <title>Rateflix</title>
     <%= csrf_meta_tags %>

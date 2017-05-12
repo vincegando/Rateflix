@@ -1,24 +1,66 @@
 <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Title:</strong>
-  <%= @movie.title %>
-</p>
+<div class="thumbnail">
+  <h3><%= link_to @movie.title, @movie %></h3>
+  <%= image_tag(@movie.img) %>
+  <br>
+  <div class="caption">
+    <p><strong>Release Date: </strong><%= @movie.release_date %></p>
+    <p><strong>Genre: </strong><%= @movie.genre %></p>
+    <% @n = 0 %>
+    <% @reviews = Review.where(movie_id: @movie.id).order("created_at DESC") %>
+    <% if @reviews.count > 0 then %>
 
-<p>
-  <strong>Release date:</strong>
-  <%= @movie.release_date %>
-</p>
 
-<p>
-  <strong>Genre:</strong>
-  <%= @movie.genre %>
-</p>
+      <% @sum = 0 %>
+      <% @reviews.each do |review| %>
+        <% @sum += review.rating %>
 
-<p>
-  <strong>Rating:</strong>
-  <%= @movie.rating %>
-</p>
+      <% end %>
 
-<%= link_to 'Edit', edit_movie_path(@movie) %> |
-<%= link_to 'Back', movies_path %>
+
+      <% @sum = @sum / @reviews.count %>
+
+      <% @movie.rating = @sum %>
+    <% end %>
+    <strong>Rating: </strong>
+    <% while @n < @movie.rating do %>
+      <%= image_tag("star-on.png") %>
+
+      <% @n += 1 %>
+    <% end %>
+  </div>
+</div>
+
+
+<br><%= link_to "Write a Review", new_movie_review_path(@movie), class: "btn btn-primary" %>
+<br>
+<!-- put on the side -->
+<br>
+<% if @r.blank? %>
+  <p>
+    There are no reviews for this movie.
+  </p>
+<% else %>
+  <table class="table-striped">
+    <tbody>
+      <% @r.each do |review| %>
+        <% if review.movie_id == @movie.id then %>
+          <tr>
+            <td>
+              <p><strong>Name: </strong><%= review.username %></p>
+              <p><strong>Date: </strong><%= review.date %></p>
+              <p><strong>Comment: </strong><%= review.comment %></p>
+              <% n = 0 %>
+              <strong>Rating: </strong>
+              <% while n < review.rating do %>
+                <%= image_tag("star-on.png") %>
+                <% n += 1 %>
+              <% end %>
+            </td>  
+          </tr>
+        <% end %>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
